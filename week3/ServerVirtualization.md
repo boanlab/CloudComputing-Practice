@@ -5,10 +5,10 @@
 
 ## 1. KVM (Kernel-based Virtual Machine)
 
-리눅스 커널 모듈 기반의 가상화 기능으로 Intel VT-x 또는 AMD-V를 이용해 가상머신 실행을 가속
+리눅스 커널 모듈 기반의 가상화 기능으로 Intel VT-x 또는 AMD-V를 이용해 가상머신(VM) 실행을 가속
 
 - 리눅스를 호스트 OS로 이용하면서 하이퍼바이저 역할 수행
-- 가상머신 실행 시 QEMU와 함께 사용
+- VM 실행 시 QEMU와 함께 사용
 - QEMU는 디바이스 에뮬레이션 및 VM 실행 기능 담당
 
 ![figure1](./images/figure1.png)
@@ -17,7 +17,7 @@
 
 ## 2. QEMU (Quick Emulator)
 
-PC 환경을 에뮬레이션하는 가상머신 실행기이자 프로세스 에뮬레이터로, KVM과 함께 사용하여 가상머신을 실행
+PC 환경을 에뮬레이션하는 VM 실행기이자 프로세스 에뮬레이터로, KVM과 함께 사용하여 VM을 실행
 
 - CPU와 주변 장치(Disk, NIC 등)를 에뮬레이션
 - CPU 명령을 변환하여 실행
@@ -87,10 +87,10 @@ sudo usermod -aG kvm $USER
 
 ---
 
-## 5. 가상머신 네트워크 확인
+## 5. VM 네트워크 확인
 
 ```bash
-# 가상머신을 위해 생성된 네트워크 인터페이스 확인
+# VM을 위해 생성된 네트워크 인터페이스 확인
 ip a
 ```
 
@@ -124,7 +124,7 @@ virsh net-dumpxml default
 ![figure9](./images/figure9.png)
 ---
 
-## 6. ISO 기반 가상머신 생성
+## 6. ISO 기반 VM 생성
 
 ### Ubuntu ISO 다운로드
 
@@ -136,7 +136,7 @@ sudo mv ubuntu-24.04.3-live-server-amd64.iso /var/lib/libvirt/images/
 
 ---
 
-### 가상머신 생성
+### VM 생성
 
 ```bash
 virt-install --name ubuntu-vm \
@@ -150,7 +150,7 @@ virt-install --name ubuntu-vm \
 
 ---
 
-## 7. VNC를 통한 가상머신 접속
+## 7. VM 접속
 
 ### RealVNC Viewer 다운로드
 
@@ -158,9 +158,9 @@ https://www.realvnc.com/en/connect/download/viewer/
 
 ---
 
-### 가상머신 화면 연결
+### VM 화면 연결
 
-RealVNC Viewer를 이용하여 가상머신 화면 접속
+RealVNC Viewer를 이용하여 VM 화면 접속
 
 ![figure10](./images/figure10.png)
 
@@ -188,8 +188,24 @@ VM 종료 시 포트는 재사용됨
 ![figure12](./images/figure12.png)
 
 ---
+### SSH를 이용한 VM 접속
+ISO 기반 VM은 SSH 서버가 기본적으로 설치되어 있지 않음
 
-## 8. 가상머신 관리 명령어 (virsh)
+```bash
+sudo apt-get update
+
+sudo apt-get install -y openssh-server
+
+# ssh 서버 시작
+sudo systemctl start ssh
+
+# ssh 자동 시작 설정
+sudo systemctl enable ssh
+```
+
+---
+
+## 8. VM 관리 명령어 (virsh)
 
 ### VM 목록 확인
 
@@ -368,6 +384,14 @@ virt-install --name myvm \
 --graphics vnc,listen=0.0.0.0 \
 --os-variant ubuntu24.04
 ```
+### SSH를 이용한 VM 접속
+Cloud Image 기반 VM은 기본적으로 SSH 서버가 설치되어 있어 SSH를 이용한 접속이 가능
+```bash
+# VM IP 주소는 network-config에서 설정한 IP로 접속
+ssh ubuntu@<VM_IP_ADDRESS>
+
+ssh ubuntu@192.168.122.20
+```
 
 ---
 
@@ -439,3 +463,5 @@ cupark@dankook.ac.kr
 
 남재현  
 namjh@dankook.ac.kr
+
+## Networked Systems and Security Lab (BoanLab) @ DKU
